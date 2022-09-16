@@ -1,0 +1,146 @@
+<p>Tho board shows how many minimum moves take the knight to any position</p>
+<table></table>
+<button onClick="nocolor()">No color</button>
+<script src="jquery-1.9.1.min.js"></script>
+<style>
+  td {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+  td {
+    border: 1px solid #ccc;
+	cursor: pointer;
+  }
+  td:hover {
+	background-color: transparent !important;
+  }
+</style>
+<script>
+  function board() {
+    var filas = prompt("Insert number below 100");
+    var colus = filas;
+    while (filas) {
+      filas--;
+      var tr = $("<tr>");
+      var cols = colus;
+      while (cols) {
+        cols--;
+        tr.append($("<td>"));
+      }
+      $("table").append(tr);
+    }
+  }
+
+  function display() {
+    board();
+    var trs = $("tr");
+    var center = Math.floor(trs.length / 2);
+    var ctd = trs.eq(center).find("td").eq(center);
+    ctd.addClass("center").text("K");
+
+    var hiest = 0;
+    trs.each(function (r, rr) {
+      var $rr = $(rr);
+      $rr.find("td").each(function (i, v) {
+        var $t = $(this);
+        if (!$t.hasClass("center")) {
+          var x = ctd.index() - i;
+          var y = ctd.parent().index() - r;
+          var sol = solution(x, y);
+
+          hiest = sol > hiest ? sol : hiest;
+          $t.text(sol);
+        }
+      });
+    });
+
+    var colors = gradient("000000000", "022022022", hiest);
+    var colores = colors.map(function (v, i) {
+      var colo =
+        v.length == 6
+          ? "#0" + v.slice(1)
+          : v.length == 5
+          ? "#00" + v.slice(1)
+          : v;
+      return colo;
+    });
+    console.log(colores);
+    $("td").each(function () {
+      var $t = $(this);
+      $t.css({ backgroundColor: colores[$t.text()] });
+    });
+  }
+
+  function solution(ex, ey) {
+    ex = parseInt(ex);
+    ey = parseInt(ey);
+    ex = ex < 0 ? -ex : ex;
+    ey = ey < 0 ? -ey : ey;
+    var x = ex < ey ? ex : ey;
+    var y = x == ex ? ey : ex;
+
+    if (x + y == 1) return 3;
+    if (x == 2 && x == y) return 4;
+
+    var over = 2 * x <= y;
+
+    var yP = y + (((over ? -1 : 1) * y) % 2);
+    var dx = yP / 2 - x;
+
+    if (over) return x + dx + (dx % 2) + (y % 2);
+
+    var dxpos = dx < 0 ? -dx : dx;
+    var xP = dx + x;
+    var w = dxpos - Math.floor(dxpos / 3) * 2;
+    var result = xP + w;
+
+    if (y % 2) {
+      if (dx % 3) result += -1;
+      else result += +1;
+    }
+    return result;
+  }
+
+  /* code taken below */
+  function gradient(startColor, endColor, steps) {
+    var start = {
+      Hex: startColor,
+      R: parseInt(startColor.slice(1, 3), 16),
+      G: parseInt(startColor.slice(3, 5), 16),
+      B: parseInt(startColor.slice(5, 7), 16),
+    };
+    var end = {
+      Hex: endColor,
+      R: parseInt(endColor.slice(1, 3), 16),
+      G: parseInt(endColor.slice(3, 5), 16),
+      B: parseInt(endColor.slice(5, 7), 16),
+    };
+    diffR = end["R"] - start["R"];
+    diffG = end["G"] - start["G"];
+    diffB = end["B"] - start["B"];
+
+    stepsHex = new Array();
+    stepsR = new Array();
+    stepsG = new Array();
+    stepsB = new Array();
+
+    for (var i = 0; i <= steps; i++) {
+      stepsR[i] = start["R"] + (diffR / steps) * i;
+      stepsG[i] = start["G"] + (diffG / steps) * i;
+      stepsB[i] = start["B"] + (diffB / steps) * i;
+      stepsHex[i] =
+        "#" +
+        Math.round(stepsR[i]).toString(16) +
+        "" +
+        Math.round(stepsG[i]).toString(16) +
+        "" +
+        Math.round(stepsB[i]).toString(16);
+    }
+    return stepsHex;
+  }
+  function nocolor() {
+    $("td").css({ backgroundColor: "transparent" });
+  }
+  $(display);
+</script>
