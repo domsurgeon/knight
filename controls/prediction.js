@@ -1,37 +1,9 @@
-function predictBoard() {
-  display("predict"); // board positions => prediction(x,y)
-}
-function walkBoard() {
-  // startModel()
-  display("walk"); // board positions => prediction(x,y)
-}
-
-async function walk (x, y){
-  const ROUNDS = 25;
-  const targetPos = { x , y }
-
-  let oo = 0;
-  let bestMoves = 500;
-  let bestSteps = [];
-
-  while (oo < ROUNDS) {
-    const { countMoves, steps } = await movesToPosition(targetPos);
-    const isBetter = countMoves < bestMoves;
-    bestMoves = isBetter ? countMoves : bestMoves;
-    bestSteps = isBetter ? steps : bestSteps;
-
-    oo++;
-  }
-
-  await saveSteps(bestSteps);
-
-  return bestMoves
-}
-
-async function prediction(targetX, targetY) {
+async function prediction(targetX, targetY, bW) {
   let moves = 0;
   let position = {...initialPosition}
   let steps = []
+
+  return await move()
 
   async function move() {
     moves ++
@@ -51,15 +23,11 @@ async function prediction(targetX, targetY) {
     steps.push(newStep)
 
     if( (targetX - position.x === 0) && (targetY - position.y === 0)){
-      console.log("win",moves, steps)
       return moves
     }
-    if(moves > boardWidth * 10){
-      console.log("lose", moves, steps)
+    if(moves > bW * 10){
       return -1
     }
-    return move()
+    return await move()
   }
-
-  return move()
 }

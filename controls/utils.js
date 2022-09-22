@@ -76,3 +76,27 @@ const initialPosition = {
   x: 0,
   y: 0,
 };
+
+function rememberTries() {
+  const tries = $("#tries").val() * 1
+  localStorage.setItem('tries',tries)
+}
+
+function storageTries() {
+  const tries = localStorage.getItem('tries') * 1 || 20
+  $("#tries").val(tries)
+}
+
+storageTries()
+
+function rememberBW() {
+  const boardWidth = $("#board-width").val() * 1
+  localStorage.setItem('boardWidth',boardWidth)
+}
+
+function storageBW() {
+  const boardWidth = localStorage.getItem('boardWidth') * 1 || 20
+  $("#board-width").val(boardWidth)
+}
+
+storageBW()

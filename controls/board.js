@@ -1,7 +1,7 @@
 let boardWidth;
 
-async function board(sideLength) {
-  const fire = async () => {
+function board(sideLength) {
+  const fire = () => {
     $("table").remove();
     const $table = $("<table>");
     $("#inpi").after($table);
@@ -18,7 +18,7 @@ async function board(sideLength) {
       $table.append(tr);
     }
   };
-  return await fire();
+  return fire();
 }
 
 async function display(action) {
@@ -34,9 +34,24 @@ async function display(action) {
   let $result = $("#result");
   $result.text(result);
 
-  trs.each(async function (r, rr) {
+  let movesToAllPositions
+
+  if(action){
+    movesToAllPositions = await getPositions(boardWidth, action)
+
+    if(action === "walk") {
+      console.log("added train")
+    } else {
+      console.log(movesToAllPositions)
+    }
+  }
+
+  const $td = $("#train-data")
+  $td.text( oldTD )
+
+  trs.each(function (r, rr) {
     var $rr = $(rr);
-    $rr.find("td").each(async function (i, v) {
+    $rr.find("td").each(function (i, v) {
       var $t = $(this);
       if (!$t.hasClass("center")) {
         var x = ctd.index() - i;
@@ -45,9 +60,10 @@ async function display(action) {
         // console.log(x, y)
         var kMoves = knightTo(x, y);
         var moves = kMoves;
+
         if (action) {
-          moves =
-            action === "predict" ? await prediction(x, y) : await walk(x, y);
+          const findMoves = movesToAllPositions.find( position => position.x === x && position.y === y)
+          moves = findMoves ? findMoves.moves : -2
         }
 
         if (action) {
@@ -68,6 +84,8 @@ async function display(action) {
 
   if (!action) {
     paintFrac(hiest);
+  } else {
+    $("#model-btns")[0].style = ""
   }
 }
 
@@ -157,6 +175,38 @@ function gradient(startColor, endColor, steps) {
   }
   return stepsHex;
 }
+
 function nocolor() {
   $("td").css({ backgroundColor: "transparent" });
 }
+
+async function getPositions(bW, action) {
+  const allpositions = new Array(bW*bW)
+  const positions = action === 'predict' ? allpositions.slice(0,10) : allpositions
+  const center = Math.floor(bW / 2);
+
+  for (let index = 0; index < positions.length; index++) {
+
+    const x = index % bW - center
+    const y = Math.floor(index / bW) - center
+    let moves = 0
+
+    if( x === 0 && y === 0){
+      moves = 0
+    }
+
+    if(action === "predict") {
+      moves = await prediction(x, y, bW)
+    }else{
+      const ROUNDS = $('#tries').val()*1;
+
+      moves = await walk(x, y, ROUNDS)
+    }
+
+    positions[index] = { x, y , moves}
+  }
+
+  return positions
+}
+
+setTimeout(console.clear,0)
