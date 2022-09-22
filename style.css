@@ -1,0 +1,24 @@
+td {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+td {
+  border: 1px solid #ccc;
+cursor: pointer;
+}
+td:hover {
+background-color: transparent !important;
+}
+table {
+  margin: auto
+}
+body{
+  text-align: center;
+}
+.ok {
+  background-color: rgb(127, 255, 155);
+}
+.not-ok {
+  background-color: rgb(255, 175, 202);
+}
