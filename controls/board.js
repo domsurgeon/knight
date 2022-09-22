@@ -3,7 +3,8 @@ let boardWidth;
 async function board(sideLength) {
   const fire = async () => {
     $("table").remove();
-    $("#inpi").after($('<table>'))
+    const $table = $("<table>");
+    $("#inpi").after($table);
     var filas = sideLength || prompt("Insert number below 100");
     var colus = filas;
     while (filas) {
@@ -14,14 +15,14 @@ async function board(sideLength) {
         cols--;
         tr.append($("<td>"));
       }
-      $("table").append(tr);
+      $table.append(tr);
     }
-  }
-  return await fire()
+  };
+  return await fire();
 }
 
 async function display(action) {
-  boardWidth = $('#board-width').val()*1
+  boardWidth = $("#board-width").val() * 1;
   board(boardWidth);
   var trs = $("tr");
   var center = Math.floor(trs.length / 2);
@@ -29,9 +30,9 @@ async function display(action) {
   ctd.addClass("center").text("K");
 
   var hiest = 0;
-  let result = 0
-  let $result = $("#result")
-  $result.text(result)
+  let result = 0;
+  let $result = $("#result");
+  $result.text(result);
 
   trs.each(async function (r, rr) {
     var $rr = $(rr);
@@ -43,18 +44,19 @@ async function display(action) {
 
         // console.log(x, y)
         var kMoves = knightTo(x, y);
-        var moves = kMoves
-        if(action) {
-          moves = action === "predict" ? await prediction(x, y) : await walk(x, y)
+        var moves = kMoves;
+        if (action) {
+          moves =
+            action === "predict" ? await prediction(x, y) : await walk(x, y);
         }
 
-        if(action){
-          const isOk = kMoves === moves
-          $t.attr('class',isOk ? 'ok' : 'not-ok')
-          result += isOk ? 1/((boardWidth*boardWidth)-1) : 0
+        if (action) {
+          const isOk = kMoves === moves;
+          $t.attr("class", isOk ? "ok" : "not-ok");
+          result += isOk ? 1 / (boardWidth * boardWidth - 1) : 0;
 
-          const res = Math.ceil(result*100)
-          $result.text(`${res} %`)
+          const res = Math.ceil(result * 100);
+          $result.text(`${res} %`);
         }
 
         $t.text(moves); // kTo or pred
@@ -64,8 +66,8 @@ async function display(action) {
     });
   });
 
-  if(!action) {
-    paintFrac(hiest)
+  if (!action) {
+    paintFrac(hiest);
   }
 }
 
