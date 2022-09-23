@@ -6,43 +6,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Knight learns" />
-    <title>Knight movements test</title>
+    <title>Chess Knight moving around</title>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.min.js"></script> -->
-    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+    <script src="controls/ml5.min.js"></script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <h1>Knight to <i>coordinates</i></h1>
     <p>
-      Board rows (columns): <input type="text" id="board-width" onchange="rememberBW()" />
+      Board rows (columns): <input type="text" id="board-width" onchange="rememberBW()" size="2" />
     </p>
     <p id="inpi"></p>
-    <table></table>
+    <div id="tables">
+    </div>
     <p id="result"></p>
 
     <!-- <button onClick="loadModel()">load model</button> -->
-    <h4>Math solution <button onclick="display()">Calc</button></h4>
-    <h4>Random moves solution <button onClick="display('walk')">Move</button></h4>
+    <h4>Algoritmic <button onclick="display('algoritm')">Calc</button></h4>
+    <h4>Random <button onClick="display('random')">+ Random</button></h4>
     <p>
-      Random tries: <input type="text" id="tries" onchange="rememberTries()" size="3"/>
+      tries/coor: <input type="text" id="tries" onchange="rememberTries()" size="2"/>
     </p>
+    <p id="train-data"></p>
     <div id="model-btns" style="display: none">
-      <h4>ML solution</h4>
-      <p>Training data: <span id="train-data">0</span></p>
-      <p>
-        <!-- <button onClick="normalizeIt()">normalize set</button> > -->
-        <button onClick="trainModel()">train model</button> >
-        <button onClick="display('predict')">predict board</button>
-      </p>
+      <button onClick="trainModel()">train</button>
+      <div style="display: none" id="predict">
+        <h4>ML
+        <button onClick="display('predict')">Predict</button>
+        </div>
     </div>
     <!-- <button onClick="saveModel()">save model</button> -->
 
-    <script src="https://code.jquery.com/jquery-1.9.0.min.js"></script>
+    <script src="controls/jquery-1.9.0.min.js"></script>
 
+    <script src="controls/utils.js"></script>
     <script src="controls/model.js"></script>
     <script src="controls/board.js"></script>
+    <script src="controls/algoritm.js"></script>
     <script src="controls/prediction.js"></script>
-    <script src="controls/utils.js"></script>
-    <script src="controls/walk.js"></script>
+    <script src="controls/random.js"></script>
+    <script src="controls/display.js"></script>
+    <script src="controls/index.js"></script>
   </body>
 </html>

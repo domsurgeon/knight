@@ -6,21 +6,21 @@ async function prediction(targetX, targetY, bW) {
   return await move()
 
   async function move() {
-    moves ++
-    const inputs = {
-      dx: targetX - position.x,
-      dy: targetY - position.y,
-    };
+    const inputs = [
+      targetX - position.x,
+      targetY - position.y
+    ];
 
-    const label = await labelFromInputPrediction(inputs);
-    position = getPositionFromKey(position, label)
+    const path = await pathFromInputPrediction(inputs);
+    position = getPositionFromPath(position, path)
 
     const newStep = {
-      label,
+      path,
       inputs,
     };
 
     steps.push(newStep)
+    moves++
 
     if( (targetX - position.x === 0) && (targetY - position.y === 0)){
       return moves

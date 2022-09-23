@@ -1,4 +1,4 @@
-async function walk (x, y, ROUNDS ){
+async function random (x, y, ROUNDS ){
   const targetPos = { x , y }
 
   let oo = 0;
@@ -34,25 +34,26 @@ async function movesToPosition(targetPosition) {
     let nextPositionIndex = Math.floor(
       Math.random() * Object.keys(posiblePositions).length
     );
-    let nextPositionLabel = labelFromPositionsIndex(nextPositionIndex);
+    let nextPositionPath = pathFromPositionsIndex(nextPositionIndex);
 
-    const nextPosition = posiblePositions[nextPositionLabel];
+    const nextPosition = posiblePositions[nextPositionPath];
 
     let nextDistance = Math.sqrt(
       Math.pow(targetPosition.x - nextPosition.x, 2) +
         Math.pow(targetPosition.y - nextPosition.y, 2)
     );
 
-    delete posiblePositions[nextPositionLabel];
+    delete posiblePositions[nextPositionPath];
 
     const newStep = {
-      label: nextPositionLabel,
+      path: nextPositionPath,
       inputs: {
         dx: targetPosition.x - lastPosition.x,
         dy: targetPosition.y - lastPosition.y,
       },
     };
 
+    totalMoves++
     countMoves++;
     steps.push(newStep);
     stepsPosiblePositions.push({ ...posiblePositions });
@@ -90,7 +91,7 @@ async function movesToPosition(targetPosition) {
     return Object.keys(posiblePositions).length > 0;
   }
 
-  function labelFromPositionsIndex(index) {
+  function pathFromPositionsIndex(index) {
     return Object.keys(posiblePositions)[index];
   }
 
@@ -110,12 +111,12 @@ async function movesToPosition(targetPosition) {
   function getPosiblePositions() {
     const allPosibles = getAllPosiblePositionsObject(lastPosition);
     const posiblesArr = Object.keys(allPosibles)
-      .map((label) => ({ ...allPosibles[label], label }))
+      .map((path) => ({ ...allPosibles[path], path }))
       .sort(sortShorterDistance)
       .slice(0, 3);
 
     const posiblesObj = posiblesArr.reduce((acc, pos) => {
-      acc[pos.label] = {
+      acc[pos.path] = {
         x: pos.x,
         y: pos.y,
       };

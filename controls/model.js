@@ -1,14 +1,3 @@
-const options = {
-  inputs: ["dx", "dy"],
-  outputs: ["nextPositionKey"],
-  task: "classification",
-  debug: "true",
-};
-let model;
-
-startModel()
-
-//
 function startModel() {
   model = new ml5.neuralNetwork(options);
   return;
@@ -19,15 +8,17 @@ async function saveSteps(steps) {
 
   steps.forEach(async (position) => {
     let target = {
-      label: position.label,
+      path: position.path,
     };
 
     oldTD++
-    await model.addData({ ...position.inputs }, target);
+    const input = [ position.inputs.dx, position.inputs.dy ]
+    await model.addData(input, target);
   });
 }
 
 function trainModel() {
+  $('#predict')[0].style = "";
   model.normalizeData();
   console.log("normalized");
 
@@ -43,14 +34,13 @@ function trainModel() {
   );
 }
 
-async function labelFromInputPrediction(inputs) {
-  debugger
-  const labelsPredict = await model.classify(inputs);
+async function pathFromInputPrediction(inputs) {
+  const pathsPredict = await model.classify(inputs);
 
-  const bestConfidence = Math.max(...labelsPredict.map((k) => k.confidence));
-  const label = labelsPredict.find((k) => k.confidence === bestConfidence).label;
+  const bestConfidence = Math.max(...pathsPredict.map((k) => k.confidence));
+  const path = pathsPredict.find((k) => k.confidence === bestConfidence).label;
 
-  return label;
+  return path;
 }
 
 
